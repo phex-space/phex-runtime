@@ -1,4 +1,4 @@
-from phex_runtime import __version__
+from phex.runtime import __version__
 
 
 def test_version():

@@ -3,6 +3,9 @@ name = "phex-runtime"
 version = "0.1.0"
 description = ""
 authors = ["phex-space <phex@dein-hosting.de>"]
+packages = [
+    { include = "phex" }
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -10,11 +13,12 @@ pytest = "^6.2.5"
 pytest-asyncio = "^0.16.0"
 pytest-mock = "^3.6.1"
 pytest-cov = "^3.0.0"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^21.12b0", allow-prereleases = true}
 flake8 = "^4.0.1"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["setuptools", "poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

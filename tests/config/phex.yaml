@@ -1,0 +1,7 @@
+testing: true
+
+services:
+- id: test_plugin
+  module: tests.plugins.simple
+- id: test_plugin2
+  module: tests.plugins.simple2
