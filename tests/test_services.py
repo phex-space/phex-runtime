@@ -1,16 +1,17 @@
+import os
+
 import pytest
 from phex.runtime import configuration, services
 from phex.runtime.protocol import ServiceConfig
 from pytest_mock import MockerFixture
 
+os.environ["PHEX_CONFIG"] = "./tests/config/phex.yaml"
+
 
 @pytest.mark.asyncio
 async def test_load_service():
     loaded_services = await services.load(
-        [
-            ServiceConfig("test_sync", "tests.services.test_sync"),
-            ServiceConfig("test_async", "tests.services.test_async"),
-        ],
+        [ServiceConfig(**service) for service in configuration.get().services],
         configuration.get(),
     )
     from tests.services import test_async, test_sync

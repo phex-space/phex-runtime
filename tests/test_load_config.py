@@ -4,7 +4,6 @@ import pytest
 from phex.runtime import configuration
 
 os.environ["PHEX_CONFIG"] = "./tests/config/phex.yaml"
-configuration.get.cache_clear()
 
 
 def test_config_load():

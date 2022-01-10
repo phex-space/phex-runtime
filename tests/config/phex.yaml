@@ -1,7 +1,7 @@
 testing: true
 
 services:
-- id: test_plugin
-  module: tests.plugins.simple
-- id: test_plugin2
-  module: tests.plugins.simple2
+  - id: test_sync
+    module: tests.services.test_sync
+  - id: test_async
+    module: tests.services.test_async

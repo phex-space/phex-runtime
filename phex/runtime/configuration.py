@@ -1,12 +1,9 @@
-import dataclasses
 import functools
 import os
-import typing
 
 import yaml
 
 
-@dataclasses.dataclass
 class Configuration(dict):
     def __init__(self, initial_data: dict):
         super().__init__(initial_data)
