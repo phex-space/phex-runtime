@@ -10,11 +10,9 @@ from .protocol import Bootstrappable, Disposable, Runnable, ServiceConfig
 
 _logger = logging.getLogger(__name__)
 
-Service = typing.Optional[
-    typing.Union[
-        types.ModuleType, Initializable, Bootstrappable, Runnable, Disposable
-    ]  # noqa: E501
-]
+Service = typing.Union[
+    types.ModuleType, Initializable, Bootstrappable, Runnable, Disposable
+]  # noqa: E501
 
 
 async def load(
@@ -59,12 +57,14 @@ async def dispose(disposable: Service, suppress_errors: bool = False):
     return await _call(disposable, "dispose", suppress_errors)
 
 
-async def _call(service: Service, name: str, suppress_errors: bool, *args, **kwargs):
-    module: types.ModuleType = service
+async def _call(
+    service: Service, name: str, suppress_errors: bool, *args, **kwargs
+):  # noqa: E501
+    service_name = getattr(service, "__name__")
     try:
-        if hasattr(module, name):
-            callable = getattr(module, name)
-            _logger.debug("Calling '{}' of '{}'".format(name, module.__name__))
+        if hasattr(service, name):
+            callable = getattr(service, name)
+            _logger.debug("Calling '{}' of '{}'".format(name, service_name))
             if asyncio.iscoroutinefunction(callable):
                 result = await callable(*args, **kwargs)
             else:
@@ -72,19 +72,19 @@ async def _call(service: Service, name: str, suppress_errors: bool, *args, **kwa
             if result is not None:
                 _logger.debug(
                     "Called '{}' of '{}' with result '{}'".format(
-                        name, module.__name__, repr(result)
+                        name, service_name, repr(result)
                     )
                 )
             else:
                 _logger.debug(
-                    "Called '{}' of '{}'".format(name, module.__name__)
+                    "Called '{}' of '{}'".format(name, service_name)
                 )  # noqa: E501
             return result
     except Exception as exc:
         if suppress_errors:
             _logger.error(
                 "Failed calling '{}' of '{}': {}".format(
-                    name, module.__name__, exc
+                    name, service_name, exc
                 ),  # noqa: E501
                 exc_info=True,
             )
