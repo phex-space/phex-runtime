@@ -1,7 +1,7 @@
 import os
 
 import pytest
-from phex.runtime import configuration, services
+from phex.runtime import configuration, registry, services
 from phex.runtime.protocol import ServiceConfig
 from pytest_mock import MockerFixture
 
@@ -18,6 +18,8 @@ async def test_load_service():
 
     assert loaded_services[0] is test_sync
     assert loaded_services[1] is test_async
+    assert registry.get("test_sync") is test_sync
+    assert registry.get("test_async") is test_async
 
 
 @pytest.mark.asyncio
@@ -94,3 +96,18 @@ async def test_dispose_fail(mocker: MockerFixture):
     with pytest.raises(AssertionError):
         await services.dispose(test_async)
     await services.dispose(test_async, True)
+
+
+@pytest.mark.asyncio
+async def test_call_missing_function(mocker: MockerFixture):
+    from tests.services import test_async, test_sync
+
+    with pytest.raises(AttributeError):
+        await services._call(test_sync, "unavailable", False)
+    with pytest.raises(AttributeError):
+        await services._call(test_sync, "unavailable", True)
+
+    with pytest.raises(AttributeError):
+        await services._call(test_async, "unavailable", False)
+    with pytest.raises(AttributeError):
+        await services._call(test_async, "unavailable", True)
